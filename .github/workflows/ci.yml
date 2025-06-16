@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./AgendamientoCitas/GestorCitas
+        working-directory: ./GestorCitas
 
     steps:
     - name: 📥 Checkout
@@ -23,7 +23,7 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: ./AgendamientoCitas/GestorCitas/package-lock.json
+        cache-dependency-path: GestorCitas/package-lock.json
 
     - name: 📦 Install dependencies
       run: npm ci
@@ -37,7 +37,7 @@ jobs:
     needs: lint
     defaults:
       run:
-        working-directory: ./AgendamientoCitas/GestorCitas
+        working-directory: ./GestorCitas
     
     services:
       postgres:
@@ -62,7 +62,7 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: ./AgendamientoCitas/GestorCitas/package-lock.json
+        cache-dependency-path: GestorCitas/package-lock.json
 
     - name: 📦 Install dependencies
       run: npm ci
@@ -85,7 +85,7 @@ jobs:
     needs: [lint, test]
     defaults:
       run:
-        working-directory: ./AgendamientoCitas/GestorCitas
+        working-directory: ./GestorCitas
 
     steps:
     - name: 📥 Checkout
@@ -96,7 +96,7 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: ./AgendamientoCitas/GestorCitas/package-lock.json
+        cache-dependency-path: GestorCitas/package-lock.json
 
     - name: 📦 Install dependencies
       run: npm ci
@@ -108,7 +108,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-files
-        path: ./AgendamientoCitas/GestorCitas/dist/
+        path: GestorCitas/dist/
         retention-days: 7
 
     - name: ✅ CI Success
