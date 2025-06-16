@@ -63,10 +63,10 @@ async function startServer() {
         // Iniciar el servidor
         app.listen(PORT, () => {
             console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-            console.log(`🦷 Sistema de Gestión de Citas Odontológicas`);
+            console.log('🦷 Sistema de Gestión de Citas Odontológicas');
             console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
             console.log(`💾 Base de datos: ${process.env.DB_NAME || 'gestor_citas'}`);
-            console.log(`👥 Rutas disponibles:`);
+            console.log('👥 Rutas disponibles:');
             console.log(`   • http://localhost:${PORT}/api/appointments`);
             console.log(`   • http://localhost:${PORT}/api/patients`);
         });

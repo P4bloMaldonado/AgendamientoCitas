@@ -213,7 +213,7 @@ function populatePatientSelects() {
                 patientInfo += ` (${age} años)`;
             }
             if (patient.allergies && patient.allergies !== 'Ninguna') {
-                patientInfo += ` - ⚠️ Alergias`;
+                patientInfo += ' - ⚠️ Alergias';
             }
             
             option.textContent = patientInfo;
