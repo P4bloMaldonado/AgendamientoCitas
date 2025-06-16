@@ -11,9 +11,8 @@
     "lint": "npx eslint . --ext .js --ignore-path .gitignore",
     "lint:fix": "npx eslint . --ext .js --ignore-path .gitignore --fix",
     "build": "npm run build:clean && npm run build:copy",
-    "build:clean": "if exist dist rmdir /s /q dist && mkdir dist",
-    "build:copy": "if exist public (xcopy public dist\\public /E /I /Y) && if exist src (xcopy src dist\\src /E /I /Y) && copy package.json dist\\ /Y && copy package-lock.json dist\\ /Y && copy server.js dist\\ /Y",
-    "build:simple": "mkdir dist 2>nul & copy package.json dist\\ & copy package-lock.json dist\\ & copy server.js dist\\",
+    "build:clean": "rm -rf dist && mkdir dist",
+    "build:copy": "cp -r public dist/ && cp -r src dist/ && cp package*.json server.js dist/",
     "prebuild": "echo Iniciando build del proyecto..."
   },
   "keywords": [
