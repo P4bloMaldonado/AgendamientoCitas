@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Citas Odontológicas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) rotate(180deg); }
+        }
+
+        .header h1 {
+            position: relative;
+            z-index: 2;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            position: relative;
+            z-index: 2;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            margin-left: 10px;
+        }
+
+        .appointments-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .appointments-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 10px;
+        }
+
+        .appointment-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .appointment-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+        }
+
+        .appointment-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .appointment-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .appointment-info div {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .appointment-info strong {
+            color: #2196F3;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .appointment-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦷 Gestor de Citas Odontológicas</h1>
+            <p>Sistema integral para la gestión de citas dentales</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>Nueva Cita</h2>
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label for="patientName">Nombre del Paciente:</label>
+                        <input type="text" id="patientName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patientPhone">Teléfono:</label>
+                        <input type="tel" id="patientPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patientEmail">Email:</label>
+                        <input type="email" id="patientEmail">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentDate">Fecha:</label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentTime">Hora:</label>
+                        <input type="time" id="appointmentTime" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="treatmentType">Tipo de Tratamiento:</label>
+                        <select id="treatmentType" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="limpieza">Limpieza Dental</option>
+                            <option value="revision">Revisión General</option>
+                            <option value="empaste">Empaste</option>
+                            <option value="extraccion">Extracción</option>
+                            <option value="ortodoncia">Ortodoncia</option>
+                            <option value="blanqueamiento">Blanqueamiento</option>
+                            <option value="endodoncia">Endodoncia</option>
+                            <option value="cirugia">Cirugía</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notas Adicionales:</label>
+                        <textarea id="notes" rows="3" placeholder="Información adicional sobre el paciente o tratamiento..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">Agendar Cita</button>
+                </form>
+            </div>
+
+            <div class="appointments-section">
+                <h2>Citas Programadas</h2>
+                <div id="appointmentsList">
+                    <div class="empty-state">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">📅</div>
+                        <p>No hay citas programadas</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">Las citas aparecerán aquí una vez que las agregues</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar citas -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Cita</h2>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editPatientName">Nombre del Paciente:</label>
+                    <input type="text" id="editPatientName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPatientPhone">Teléfono:</label>
+                    <input type="tel" id="editPatientPhone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPatientEmail">Email:</label>
+                    <input type="email" id="editPatientEmail">
+                </div>
+
+                <div class="form-group">
+                    <label for="editAppointmentDate">Fecha:</label>
+                    <input type="date" id="editAppointmentDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editAppointmentTime">Hora:</label>
+                    <input type="time" id="editAppointmentTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editTreatmentType">Tipo de Tratamiento:</label>
+                    <select id="editTreatmentType" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="limpieza">Limpieza Dental</option>
+                        <option value="revision">Revisión General</option>
+                        <option value="empaste">Empaste</option>
+                        <option value="extraccion">Extracción</option>
+                        <option value="ortodoncia">Ortodoncia</option>
+                        <option value="blanqueamiento">Blanqueamiento</option>
+                        <option value="endodoncia">Endodoncia</option>
+                        <option value="cirugia">Cirugía</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editNotes">Notas Adicionales:</label>
+                    <textarea id="editNotes" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn">Guardar Cambios</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        class AppointmentManager {
+            constructor() {
+                this.appointments = this.loadAppointments();
+                this.currentEditId = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.renderAppointments();
+                this.setMinDate();
+            }
+
+            bindEvents() {
+                document.getElementById('appointmentForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addAppointment();
+                });
+
+                document.getElementById('editForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.updateAppointment();
+                });
+
+                document.querySelector('.close').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                window.addEventListener('click', (e) => {
+                    const modal = document.getElementById('editModal');
+                    if (e.target === modal) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            setMinDate() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('appointmentDate').min = today;
+                document.getElementById('editAppointmentDate').min = today;
+            }
+
+            addAppointment() {
+                const formData = this.getFormData('appointmentForm');
+                
+                if (this.isTimeSlotTaken(formData.date, formData.time)) {
+                    alert('Ya existe una cita programada para esta fecha y hora. Por favor, selecciona otro horario.');
+                    return;
+                }
+
+                const appointment = {
+                    id: Date.now().toString(),
+                    ...formData,
+                    createdAt: new Date().toISOString()
+                };
+
+                this.appointments.push(appointment);
+                this.saveAppointments();
+                this.renderAppointments();
+                this.clearForm('appointmentForm');
+                
+                this.showNotification('Cita agendada exitosamente', 'success');
+            }
+
+            getFormData(formId) {
+                const form = document.getElementById(formId);
+                const prefix = formId === 'editForm' ? 'edit' : '';
+                
+                return {
+                    patientName: document.getElementById(prefix + 'PatientName').value,
+                    patientPhone: document.getElementById(prefix + 'PatientPhone').value,
+                    patientEmail: document.getElementById(prefix + 'PatientEmail').value,
+                    date: document.getElementById(prefix + 'AppointmentDate').value,
+                    time: document.getElementById(prefix + 'AppointmentTime').value,
+                    treatmentType: document.getElementById(prefix + 'TreatmentType').value,
+                    notes: document.getElementById(prefix + 'Notes').value
+                };
+            }
+
+            isTimeSlotTaken(date, time, excludeId = null) {
+                return this.appointments.some(apt => 
+                    apt.date === date && 
+                    apt.time === time && 
+                    apt.id !== excludeId
+                );
+            }
+
+            renderAppointments() {
+                const container = document.getElementById('appointmentsList');
+                
+                if (this.appointments.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div style="font-size: 4rem; margin-bottom: 20px;">📅</div>
+                            <p>No hay citas programadas</p>
+                            <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">Las citas aparecerán aquí una vez que las agregues</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const sortedAppointments = this.appointments
+                    .sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+
+                container.innerHTML = sortedAppointments
+                    .map(apt => this.createAppointmentCard(apt))
+                    .join('');
+            }
+
+            createAppointmentCard(appointment) {
+                const date = new Date(appointment.date + ' ' + appointment.time);
+                const isToday = this.isToday(appointment.date);
+                const isPast = date < new Date();
+                
+                const treatmentNames = {
+                    'limpieza': 'Limpieza Dental',
+                    'revision': 'Revisión General',
+                    'empaste': 'Empaste',
+                    'extraccion': 'Extracción',
+                    'ortodoncia': 'Ortodoncia',
+                    'blanqueamiento': 'Blanqueamiento',
+                    'endodoncia': 'Endodoncia',
+                    'cirugia': 'Cirugía'
+                };
+
+                return `
+                    <div class="appointment-card ${isPast ? 'past' : ''}" style="${isPast ? 'opacity: 0.7; border-left-color: #6c757d;' : ''}">
+                        <div class="appointment-info">
+                            <div>
+                                <strong>Paciente</strong>
+                                ${appointment.patientName}
+                            </div>
+                            <div>
+                                <strong>Teléfono</strong>
+                                ${appointment.patientPhone}
+                            </div>
+                            <div>
+                                <strong>Fecha</strong>
+                                ${this.formatDate(appointment.date)} ${isToday ? '(Hoy)' : ''}
+                            </div>
+                            <div>
+                                <strong>Hora</strong>
+                                ${appointment.time}
+                            </div>
+                            <div>
+                                <strong>Tratamiento</strong>
+                                ${treatmentNames[appointment.treatmentType] || appointment.treatmentType}
+                            </div>
+                            <div>
+                                <strong>Email</strong>
+                                ${appointment.patientEmail || 'No proporcionado'}
+                            </div>
+                        </div>
+                        ${appointment.notes ? `
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #2196F3;">
+                                <strong style="color: #2196F3;">Notas:</strong><br>
+                                ${appointment.notes}
+                            </div>
+                        ` : ''}
+                        <div class="appointment-actions">
+                            <button class="btn btn-small" onclick="appointmentManager.editAppointment('${appointment.id}')">
+                                Editar
+                            </button>
+                            <button class="btn btn-small btn-secondary" onclick="appointmentManager.deleteAppointment('${appointment.id}')">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            isToday(date) {
+                const today = new Date().toISOString().split('T')[0];
+                return date === today;
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString + 'T00:00:00');
+                return date.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            editAppointment(id) {
+                const appointment = this.appointments.find(apt => apt.id === id);
+                if (!appointment) return;
+
+                this.currentEditId = id;
+                this.populateEditForm(appointment);
+                this.showModal();
+            }
+
+            populateEditForm(appointment) {
+                document.getElementById('editPatientName').value = appointment.patientName;
+                document.getElementById('editPatientPhone').value = appointment.patientPhone;
+                document.getElementById('editPatientEmail').value = appointment.patientEmail || '';
+                document.getElementById('editAppointmentDate').value = appointment.date;
+                document.getElementById('editAppointmentTime').value = appointment.time;
+                document.getElementById('editTreatmentType').value = appointment.treatmentType;
+                document.getElementById('editNotes').value = appointment.notes || '';
+            }
+
+            updateAppointment() {
+                const formData = this.getFormData('editForm');
+                
+                if (this.isTimeSlotTaken(formData.date, formData.time, this.currentEditId)) {
+                    alert('Ya existe una cita programada para esta fecha y hora. Por favor, selecciona otro horario.');
+                    return;
+                }
+
+                const index = this.appointments.findIndex(apt => apt.id === this.currentEditId);
+                if (index !== -1) {
+                    this.appointments[index] = {
+                        ...this.appointments[index],
+                        ...formData,
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    this.saveAppointments();
+                    this.renderAppointments();
+                    this.closeModal();
+                    this.showNotification('Cita actualizada exitosamente', 'success');
+                }
+            }
+
+            deleteAppointment(id) {
+                if (confirm('¿Estás seguro de que deseas eliminar esta cita?')) {
+                    this.appointments = this.appointments.filter(apt => apt.id !== id);
+                    this.saveAppointments();
+                    this.renderAppointments();
+                    this.showNotification('Cita eliminada exitosamente', 'success');
+                }
+            }
+
+            showModal() {
+                document.getElementById('editModal').style.display = 'block';
+            }
+
+            closeModal() {
+                document.getElementById('editModal').style.display = 'none';
+                this.currentEditId = null;
+            }
+
+            clearForm(formId) {
+                document.getElementById(formId).reset();
+            }
+
+            showNotification(message, type = 'info') {
+                // Crear elemento de notificación
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    z-index: 1001;
+                    font-weight: 500;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            loadAppointments() {
+                const stored = JSON.parse(JSON.stringify([])); // Simular carga desde memoria
+                return stored;
+            }
+
+            saveAppointments() {
+                // En un entorno real, aquí harías una llamada a la API
+                console.log('Citas guardadas:', this.appointments);
+            }
+        }
+
+        // Inicializar la aplicación
+        const appointmentManager = new AppointmentManager();
+
+        // Agregar estilos de animación
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
