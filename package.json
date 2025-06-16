@@ -1,7 +1,7 @@
 {
-  "name": "appointment-management",
+  "name": "dental-appointment-management",
   "version": "1.0.0",
-  "description": "Sistema de gestión de citas para construcción",
+  "description": "Sistema de gestión de citas odontológicas",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,16 +9,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "dental",
     "appointments",
-    "management",
-    "construction",
-    "scheduling"
+    "odontologia",
+    "scheduling",
+    "healthcare"
   ],
   "author": "Tu Nombre",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "mysql2": "^3.6.0",
+    "pg": "^8.11.3",
     "dotenv": "^16.3.1",
     "cors": "^2.8.5",
     "body-parser": "^1.20.2",

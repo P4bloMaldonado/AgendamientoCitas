@@ -1,0 +1,767 @@
+/* ===== RESET Y CONFIGURACIÓN BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* ===== GRID DE ESTADÍSTICAS ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.stat-card i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card h3 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.stat-card p {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.card h2 {
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.card h2 i {
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+/* ===== FORMULARIOS ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+/* ===== BOTONES ===== */
+.btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    border: 2px solid transparent;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+}
+
+/* ===== LISTA DE CITAS ===== */
+.appointments-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.appointments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.appointments-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.appointments-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.appointments-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.appointment-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.appointment-item:hover {
+    background: #e3f2fd;
+    border-color: #667eea;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.appointment-client {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.appointment-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-agendada { 
+    background: #fff3cd; 
+    color: #856404; 
+    border: 1px solid #ffeaa7;
+}
+
+.status-confirmada { 
+    background: #d1ecf1; 
+    color: #0c5460; 
+    border: 1px solid #a2d2ff;
+}
+
+.status-en_curso { 
+    background: #e2e3e5; 
+    color: #383d41; 
+    border: 1px solid #d6d8db;
+}
+
+.status-completada { 
+    background: #d4edda; 
+    color: #155724; 
+    border: 1px solid #b3e5b3;
+}
+
+.status-cancelada { 
+    background: #f8d7da; 
+    color: #721c24; 
+    border: 1px solid #f5c6cb;
+}
+
+.status-no_asistio { 
+    background: #f5c6cb; 
+    color: #721c24; 
+    border: 1px solid #f1b0b7;
+}
+
+.appointment-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.appointment-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+}
+
+.appointment-detail i {
+    width: 16px;
+    color: #667eea;
+    font-size: 13px;
+}
+
+.appointment-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* ===== ALERTAS ===== */
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+    font-weight: 500;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* ===== LOADING SPINNER ===== */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== MODAL ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease;
+    position: relative;
+}
+
+@keyframes modalSlideIn {
+    from { 
+        transform: translateY(-50px); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+
+.close:hover {
+    color: #667eea;
+}
+
+/* ===== ESTADO VACÍO ===== */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: #999;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA ODONTOLOGÍA ===== */
+
+/* Alertas de alergias */
+.allergy-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.allergy-warning i {
+    color: #d32f2f;
+}
+
+/* Categorías de tratamientos */
+.treatment-category {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.treatment-category.preventivo { background: #e8f5e8; color: #2e7d32; }
+.treatment-category.restaurativo { background: #e3f2fd; color: #1565c0; }
+.treatment-category.endodoncia { background: #fce4ec; color: #c2185b; }
+.treatment-category.cirugia { background: #ffebee; color: #d32f2f; }
+.treatment-category.estetico { background: #f3e5f5; color: #7b1fa2; }
+.treatment-category.ortodoncia { background: #fff3e0; color: #ef6c00; }
+.treatment-category.periodontal { background: #e0f2f1; color: #00695c; }
+
+/* Notas del dentista */
+.dentist-notes {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+}
+
+/* Información del paciente */
+.patient-info {
+    background: #f0f8ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.patient-age {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+/* Duración de tratamiento */
+.treatment-duration {
+    background: #e8f5e8;
+    color: #2e7d32;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Estados específicos de citas odontológicas */
+.appointment-item[data-status="en_curso"] {
+    border-left: 4px solid #ff9800;
+    background: linear-gradient(90deg, #fff8e1 0%, #ffffff 100%);
+}
+
+.appointment-item[data-status="no_asistio"] {
+    opacity: 0.7;
+    background: linear-gradient(90deg, #ffebee 0%, #ffffff 100%);
+}
+
+/* Gradientes suaves para tarjetas de estadísticas odontológicas */
+.stat-card:nth-child(1) i { 
+    background: linear-gradient(135deg, #4fc3f7, #29b6f6); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card:nth-child(2) i { 
+    background: linear-gradient(135deg, #ffb74d, #ff9800); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card:nth-child(3) i { 
+    background: linear-gradient(135deg, #81c784, #4caf50); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card:nth-child(4) i { 
+    background: linear-gradient(135deg, #e57373, #f44336); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Formularios específicos para odontología */
+optgroup {
+    font-weight: bold;
+    color: #667eea;
+    padding: 8px 0;
+}
+
+optgroup option {
+    font-weight: normal;
+    color: #333;
+    padding: 4px 8px;
+}
+
+/* Iconos específicos para tratamientos */
+.fas.fa-tooth {
+    color: #667eea;
+}
+
+/* Textos de ayuda para formularios */
+.form-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Responsive específico para odontología */
+@media (max-width: 768px) {
+    .treatment-category {
+        font-size: 0.7rem;
+        padding: 1px 6px;
+    }
+    
+    .allergy-warning {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+    
+    .form-text {
+        font-size: 0.75rem;
+    }
+}
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .header p {
+        font-size: 1rem;
+    }
+    
+    .appointment-details {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .appointment-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .appointment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .appointment-actions .btn {
+        width: auto;
+    }
+}
+
+/* ===== UTILIDADES ===== */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+
+.p-10 { padding: 10px; }
+.p-20 { padding: 20px; }
+
+/* ===== EFECTOS ESPECIALES ===== */
+.card {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.stat-card {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+/* ===== ANIMACIONES ADICIONALES ===== */
+.appointment-item {
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card {
+    animation: fadeInScale 0.5s ease;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
