@@ -8,7 +8,7 @@ require('dotenv').config();
 const { initializeDatabase, testConnection } = require('./src/database/connection');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -20,9 +20,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Importar rutas
 const appointmentRoutes = require('./src/routes/appointments');
+const patientRoutes = require('./src/routes/patients');
 
 // Usar las rutas
 app.use('/api/appointments', appointmentRoutes);
+app.use('/api/patients', patientRoutes);
 
 // Ruta principal
 app.get('/', (req, res) => {
@@ -63,7 +65,10 @@ async function startServer() {
             console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
             console.log(`🦷 Sistema de Gestión de Citas Odontológicas`);
             console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
-            console.log(`💾 Base de datos: ${process.env.DB_NAME || 'dental_appointment_management'}`);
+            console.log(`💾 Base de datos: ${process.env.DB_NAME || 'gestor_citas'}`);
+            console.log(`👥 Rutas disponibles:`);
+            console.log(`   • http://localhost:${PORT}/api/appointments`);
+            console.log(`   • http://localhost:${PORT}/api/patients`);
         });
         
     } catch (error) {

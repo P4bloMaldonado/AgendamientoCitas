@@ -765,3 +765,213 @@ optgroup option {
         transform: scale(1);
     }
 }
+/* ===== ESTILOS PARA GESTIÓN DE PACIENTES ===== */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.patients-list {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.patient-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.patient-item:hover {
+    background: #e3f2fd;
+    border-color: #667eea;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+}
+
+.patient-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.patient-name {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.patient-name i {
+    color: #667eea;
+}
+
+.patient-age {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: normal;
+    margin-left: 8px;
+}
+
+.allergy-badge {
+   background: #fff3cd;
+   color: #856404;
+   padding: 4px 8px;
+   border-radius: 12px;
+   font-size: 0.8rem;
+   font-weight: bold;
+   border: 1px solid #ffeaa7;
+   display: flex;
+   align-items: center;
+   gap: 4px;
+}
+
+.allergy-badge i {
+   color: #d32f2f;
+}
+
+.patient-details {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+   gap: 10px;
+   margin-bottom: 15px;
+}
+
+.patient-detail {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   color: #666;
+   font-size: 0.9rem;
+}
+
+.patient-detail i {
+   width: 16px;
+   color: #667eea;
+   font-size: 0.9rem;
+}
+
+.patient-actions {
+   display: flex;
+   gap: 10px;
+   justify-content: flex-end;
+   margin-top: 15px;
+   padding-top: 15px;
+   border-top: 1px solid #e9ecef;
+}
+
+/* Alertas específicas para pacientes */
+.allergy-warning {
+   background: #fff3cd;
+   border: 1px solid #ffeaa7;
+   color: #856404;
+   padding: 12px;
+   border-radius: 6px;
+   margin: 12px 0;
+   font-size: 0.9rem;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.allergy-warning i {
+   color: #d32f2f;
+   font-size: 1rem;
+}
+
+/* Responsive para formularios de pacientes */
+@media (max-width: 768px) {
+   .form-row {
+       grid-template-columns: 1fr;
+       gap: 15px;
+   }
+   
+   .patient-details {
+       grid-template-columns: 1fr;
+       gap: 8px;
+   }
+   
+   .patient-header {
+       flex-direction: column;
+       align-items: flex-start;
+       gap: 10px;
+   }
+   
+   .patient-actions {
+       flex-direction: column;
+       gap: 8px;
+   }
+   
+   .patient-actions .btn {
+       width: 100%;
+       justify-content: center;
+   }
+}
+
+/* Estados específicos para pacientes */
+.patient-item[data-has-allergies="true"] {
+   border-left: 4px solid #ffc107;
+}
+
+.patient-item[data-has-medical-history="true"] {
+   border-right: 4px solid #17a2b8;
+}
+
+/* Búsqueda de pacientes */
+#search-patients {
+   position: relative;
+}
+
+#search-patients:focus {
+   border-color: #667eea;
+   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Estadísticas específicas para pacientes */
+.stat-card:nth-child(1) i { 
+   background: linear-gradient(135deg, #667eea, #764ba2); 
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+}
+
+.stat-card:nth-child(2) i { 
+   background: linear-gradient(135deg, #4fc3f7, #29b6f6); 
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+}
+
+.stat-card:nth-child(3) i { 
+   background: linear-gradient(135deg, #ffb74d, #ff9800); 
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+}
+
+.stat-card:nth-child(4) i { 
+   background: linear-gradient(135deg, #81c784, #4caf50); 
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+}
+
+/* Botón de volver */
+.btn-secondary {
+   background: linear-gradient(135deg, #6c757d, #5a6268);
+   color: white;
+}
+
+.btn-secondary:hover {
+   box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+}

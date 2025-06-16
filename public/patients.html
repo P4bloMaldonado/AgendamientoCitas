@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pacientes - Sistema Odontológico</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Gestión de pacientes para el sistema odontológico">
+    <meta name="keywords" content="pacientes, odontología, dental, gestión">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
+    
+    <!-- CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-users"></i> Gestión de Pacientes</h1>
+            <p>Administración de pacientes del consultorio dental</p>
+            <div style="margin-top: 15px;">
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a Citas
+                </a>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid" aria-label="Estadísticas de pacientes">
+            <div class="stat-card">
+                <i class="fas fa-user-friends" aria-hidden="true"></i>
+                <h3 id="total-patients">0</h3>
+                <p>Total Pacientes</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                <h3 id="new-patients-month">0</h3>
+                <p>Nuevos este Mes</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                <h3 id="patients-with-allergies">0</h3>
+                <p>Con Alergias</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-birthday-cake" aria-hidden="true"></i>
+                <h3 id="birthdays-this-month">0</h3>
+                <p>Cumpleaños este Mes</p>
+            </div>
+        </section>
+
+        <!-- Alert Messages -->
+        <div id="alert-success" class="alert alert-success" role="alert" aria-live="polite"></div>
+        <div id="alert-error" class="alert alert-error" role="alert" aria-live="assertive"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- New Patient Form -->
+            <section class="card">
+                <h2><i class="fas fa-user-plus" aria-hidden="true"></i> Nuevo Paciente</h2>
+                <form id="patient-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-name">Nombre Completo *</label>
+                            <input type="text" id="patient-name" required maxlength="255">
+                            <small class="form-text">Nombre y apellidos del paciente</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="patient-email">Email</label>
+                            <input type="email" id="patient-email" maxlength="255">
+                            <small class="form-text">Correo electrónico para contacto</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-phone">Teléfono</label>
+                            <input type="tel" id="patient-phone" maxlength="20">
+                            <small class="form-text">Número de contacto principal</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="patient-birth-date">Fecha de Nacimiento</label>
+                            <input type="date" id="patient-birth-date">
+                            <small class="form-text">Para calcular la edad del paciente</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patient-address">Dirección</label>
+                        <textarea id="patient-address" rows="2" placeholder="Dirección completa del paciente..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emergency-contact">Contacto de Emergencia</label>
+                            <input type="text" id="emergency-contact" maxlength="255" placeholder="Nombre del contacto">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emergency-phone">Teléfono de Emergencia</label>
+                            <input type="tel" id="emergency-phone" maxlength="20" placeholder="Número de contacto">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medical-history">Historia Médica</label>
+                        <textarea id="medical-history" rows="3" placeholder="Condiciones médicas relevantes, medicamentos, cirugías previas..."></textarea>
+                        <small class="form-text">Información médica importante para el tratamiento</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="allergies">Alergias</label>
+                        <textarea id="allergies" rows="2" placeholder="Alergias a medicamentos, materiales, alimentos..."></textarea>
+                        <small class="form-text">⚠️ Muy importante para evitar reacciones alérgicas</small>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-user-plus" aria-hidden="true"></i>
+                        <span id="btn-text">Agregar Paciente</span>
+                        <div id="btn-loading" class="loading" style="display: none;"></div>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Patients List -->
+            <section class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>
+                        <i class="fas fa-list" aria-hidden="true"></i> 
+                        Lista de Pacientes
+                    </h2>
+                    <button id="refresh-btn" class="btn btn-small">
+                        <i class="fas fa-sync-alt" aria-hidden="true"></i> Actualizar
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="search-patients">Buscar Pacientes</label>
+                    <input type="text" id="search-patients" placeholder="Buscar por nombre, email o teléfono...">
+                    <small class="form-text">Busca pacientes en tiempo real</small>
+                </div>
+                
+                <div id="patients-container" class="patients-list">
+                    <div class="empty-state">
+                        <i class="fas fa-user-times" aria-hidden="true"></i>
+                        <p>No hay pacientes registrados</p>
+                        <small>Los pacientes aparecerán aquí una vez que los agregues</small>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Patient Modal -->
+    <div id="edit-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close" aria-label="Cerrar modal">&times;</span>
+            <h2 id="modal-title"><i class="fas fa-user-edit" aria-hidden="true"></i> Editar Paciente</h2>
+            <form id="edit-form" novalidate>
+                <input type="hidden" id="edit-patient-id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-patient-name">Nombre Completo *</label>
+                        <input type="text" id="edit-patient-name" required maxlength="255">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-patient-email">Email</label>
+                        <input type="email" id="edit-patient-email" maxlength="255">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-patient-phone">Teléfono</label>
+                        <input type="tel" id="edit-patient-phone" maxlength="20">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-patient-birth-date">Fecha de Nacimiento</label>
+                        <input type="date" id="edit-patient-birth-date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-patient-address">Dirección</label>
+                    <textarea id="edit-patient-address" rows="2"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-emergency-contact">Contacto de Emergencia</label>
+                        <input type="text" id="edit-emergency-contact" maxlength="255">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-emergency-phone">Teléfono de Emergencia</label>
+                        <input type="tel" id="edit-emergency-phone" maxlength="20">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-medical-history">Historia Médica</label>
+                    <textarea id="edit-medical-history" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-allergies">Alergias</label>
+                    <textarea id="edit-allergies" rows="2"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" id="cancel-edit" class="btn btn-secondary">
+                        <i class="fas fa-times" aria-hidden="true"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save" aria-hidden="true"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/patients.js"></script>
+</body>
+</html>

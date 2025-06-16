@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Citas Odontológicas</title>
-    
+
     <!-- Meta tags para SEO y redes sociales -->
-    <meta name="description" content="Sistema completo de gestión de citas para consultorios dentales y clínicas odontológicas">
+    <meta name="description"
+        content="Sistema completo de gestión de citas para consultorios dentales y clínicas odontológicas">
     <meta name="keywords" content="citas, odontología, dental, gestión, appointments, scheduling, dentista">
     <meta name="author" content="Sistema de Gestión de Citas Odontológicas">
-    
+
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
-    
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
+
     <!-- CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -24,7 +28,11 @@
             <h1><i class="fas fa-tooth"></i> Sistema de Gestión de Citas Odontológicas</h1>
             <p>Administración profesional de citas para consultorios dentales</p>
         </header>
-
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="/patients.html" class="btn btn-secondary">
+                <i class="fas fa-users"></i> Gestionar Pacientes
+            </a>
+        </div>
         <!-- Stats Grid -->
         <section class="stats-grid" aria-label="Estadísticas de citas">
             <div class="stat-card">
@@ -66,7 +74,7 @@
                         </select>
                         <small id="patient-help" class="form-text">Seleccione el paciente para la cita</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="treatment-select">Tratamiento *</label>
                         <select id="treatment-select" required aria-describedby="treatment-help">
@@ -74,25 +82,26 @@
                         </select>
                         <small id="treatment-help" class="form-text">Tipo de tratamiento dental a realizar</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="appointment-date">Fecha *</label>
                         <input type="date" id="appointment-date" required aria-describedby="date-help">
                         <small id="date-help" class="form-text">Fecha de la cita (no puede ser en el pasado)</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="appointment-time">Hora *</label>
                         <input type="time" id="appointment-time" required aria-describedby="time-help">
                         <small id="time-help" class="form-text">Hora de inicio de la cita</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="appointment-notes">Notas del Paciente (Opcional)</label>
-                        <textarea id="appointment-notes" placeholder="Síntomas, molestias, solicitudes del paciente..." aria-describedby="notes-help"></textarea>
+                        <textarea id="appointment-notes" placeholder="Síntomas, molestias, solicitudes del paciente..."
+                            aria-describedby="notes-help"></textarea>
                         <small id="notes-help" class="form-text">Información que proporciona el paciente</small>
                     </div>
-                    
+
                     <button type="submit" class="btn" aria-describedby="submit-help">
                         <i class="fas fa-save" aria-hidden="true"></i>
                         <span id="btn-text">Crear Cita</span>
@@ -106,21 +115,22 @@
             <section class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2>
-                        <i class="fas fa-list" aria-hidden="true"></i> 
+                        <i class="fas fa-list" aria-hidden="true"></i>
                         Citas Programadas
                     </h2>
                     <button id="refresh-btn" class="btn btn-small" aria-label="Actualizar lista de citas">
                         <i class="fas fa-sync-alt" aria-hidden="true"></i> Actualizar
                     </button>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="filter-date">Filtrar por fecha</label>
                     <input type="date" id="filter-date" aria-describedby="filter-help">
                     <small id="filter-help" class="form-text">Seleccione una fecha para filtrar las citas</small>
                 </div>
-                
-                <div id="appointments-container" class="appointments-list" role="region" aria-label="Lista de citas programadas">
+
+                <div id="appointments-container" class="appointments-list" role="region"
+                    aria-label="Lista de citas programadas">
                     <div class="empty-state">
                         <i class="fas fa-calendar-times" aria-hidden="true"></i>
                         <p>No hay citas programadas</p>
@@ -138,31 +148,31 @@
             <h2 id="modal-title"><i class="fas fa-edit" aria-hidden="true"></i> Editar Cita</h2>
             <form id="edit-form" novalidate>
                 <input type="hidden" id="edit-appointment-id">
-                
+
                 <div class="form-group">
                     <label for="edit-patient-select">Paciente *</label>
                     <select id="edit-patient-select" required>
                         <option value="">Seleccione un paciente</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit-treatment-select">Tratamiento *</label>
                     <select id="edit-treatment-select" required>
                         <option value="">Seleccione un tratamiento</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit-appointment-date">Fecha *</label>
                     <input type="date" id="edit-appointment-date" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit-appointment-time">Hora *</label>
                     <input type="time" id="edit-appointment-time" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit-status">Estado *</label>
                     <select id="edit-status" required>
@@ -174,17 +184,19 @@
                         <option value="no_asistio">No Asistió</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit-appointment-notes">Notas del Paciente</label>
-                    <textarea id="edit-appointment-notes" placeholder="Síntomas, solicitudes del paciente..."></textarea>
+                    <textarea id="edit-appointment-notes"
+                        placeholder="Síntomas, solicitudes del paciente..."></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit-dentist-notes">Notas del Dentista</label>
-                    <textarea id="edit-dentist-notes" placeholder="Diagnóstico, observaciones, plan de tratamiento..."></textarea>
+                    <textarea id="edit-dentist-notes"
+                        placeholder="Diagnóstico, observaciones, plan de tratamiento..."></textarea>
                 </div>
-                
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" id="cancel-edit" class="btn btn-secondary">
                         <i class="fas fa-times" aria-hidden="true"></i> Cancelar
@@ -200,4 +212,5 @@
     <!-- JavaScript -->
     <script src="js/app.js"></script>
 </body>
+
 </html>
