@@ -1,6 +1,6 @@
 # 🦷 Sistema de Gestión de Citas Odontológicas
 
-Un sistema completo de gestión de citas diseñado específicamente para consultorios dentales y clínicas odontológicas.
+Un sistema completo de gestión de citas diseñado específicamente para consultorios dentales y clínicas odontológicas..
 
 ## ✨ Características
 
