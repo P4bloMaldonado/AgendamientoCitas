@@ -1,11 +1,6 @@
-import {
-    showAlert,
-    showLoading,
-    formatDate,
-    formatTime,
-    getStatusText,
-    escapeHtml
-} from './lib/utilidades.js';
+/* eslint-env browser */
+/* eslint parserOptions: { "sourceType": "module" } */
+
 // ===== VARIABLES GLOBALES =====
 let appointments = [];
 let patients = [];
