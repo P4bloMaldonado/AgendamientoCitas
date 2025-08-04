@@ -1,18 +1,5 @@
-// ===== IMPORTACIÓN DE FUNCIONES DE UTILIDAD =====
-import {
-    showAlert,
-    showLoading,
-    formatDate,
-    formatTime,
-    getStatusText,
-    getCategoryName,
-    calculateAge,
-    escapeHtml,
-    validateEmail,
-    validateTime,
-    validateDate,
-    debounce
-} from './lib/utilidades.js';
+// ===== FUNCIONES DE UTILIDAD =====
+// Ya no se importa nada. Se espera que <script src="lib/utilidades.js"></script> esté cargado en el HTML
 
 // ===== VARIABLES GLOBALES =====
 let appointments = [];
@@ -43,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initApp();
 });
 
-// ===== FUNCIÓN PRINCIPAL DE INICIO =====
 function initApp() {
     fetchPatients();
     fetchTreatments();
@@ -55,7 +41,6 @@ function initApp() {
     filterDate?.addEventListener('change', filterAppointments);
 }
 
-// ===== OBTENER PACIENTES =====
 function fetchPatients() {
     fetch(`${CONFIG.API_BASE_URL}/patients`)
         .then(res => res.json())
@@ -69,7 +54,6 @@ function fetchPatients() {
         });
 }
 
-// ===== OBTENER TRATAMIENTOS =====
 function fetchTreatments() {
     fetch(`${CONFIG.API_BASE_URL}/treatments`)
         .then(res => res.json())
@@ -83,7 +67,6 @@ function fetchTreatments() {
         });
 }
 
-// ===== OBTENER CITAS =====
 function fetchAppointments() {
     fetch(`${CONFIG.API_BASE_URL}/appointments`)
         .then(res => res.json())
@@ -97,7 +80,6 @@ function fetchAppointments() {
         });
 }
 
-// ===== RENDERIZAR CITAS =====
 function renderAppointments() {
     appointmentsContainer.innerHTML = '';
 
@@ -139,19 +121,16 @@ function renderAppointments() {
     });
 }
 
-// ===== FILTRAR CITAS POR FECHA =====
 function filterAppointments() {
     renderAppointments();
 }
 
-// ===== ACTUALIZAR DATOS =====
 function refreshData() {
     fetchPatients();
     fetchTreatments();
     fetchAppointments();
 }
 
-// ===== POBLAR SELECTS =====
 function populatePatientSelects() {
     const selects = [document.getElementById('patient-select'), document.getElementById('edit-patient-select')];
     selects.forEach(select => {
@@ -180,7 +159,6 @@ function populateTreatmentSelects() {
     });
 }
 
-// ===== EDITAR CITA =====
 window.editAppointment = function (id) {
     const app = appointments.find(a => a.id === id);
     if (!app) return;
@@ -197,7 +175,6 @@ window.editAppointment = function (id) {
     editModal.style.display = 'block';
 };
 
-// ===== CERRAR MODAL =====
 document.querySelector('#edit-modal .close').addEventListener('click', () => {
     editModal.style.display = 'none';
 });
@@ -205,7 +182,6 @@ document.getElementById('cancel-edit').addEventListener('click', () => {
     editModal.style.display = 'none';
 });
 
-// ===== GUARDAR NUEVA CITA =====
 function handleAppointmentSubmit(event) {
     event.preventDefault();
     const form = event.target;
@@ -240,7 +216,6 @@ function handleAppointmentSubmit(event) {
         });
 }
 
-// ===== GUARDAR EDICIÓN DE CITA =====
 function handleEditSubmit(event) {
     event.preventDefault();
     const form = event.target;
@@ -273,7 +248,6 @@ function handleEditSubmit(event) {
         });
 }
 
-// ===== VERIFICACIÓN DE CONECTIVIDAD =====
 function checkConnectivity() {
     if (navigator.onLine) {
         console.log('🌐 Conexión a internet: ✅ Online');
@@ -294,5 +268,4 @@ window.addEventListener('offline', () => {
     showAlert('Se perdió la conexión a internet', 'error');
 });
 
-// Verificar conectividad al cargar
 checkConnectivity();

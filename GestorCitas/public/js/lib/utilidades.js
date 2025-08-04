@@ -1,5 +1,5 @@
 // ===== ALERTAS =====
-export function showAlert(message, type = 'success', duration = 5000) {
+window.showAlert = function(message, type = 'success', duration = 5000) {
     const alertDiv = document.getElementById(type === 'success' ? 'alert-success' : 'alert-error');
     if (!alertDiv) return;
     alertDiv.textContent = message;
@@ -8,10 +8,10 @@ export function showAlert(message, type = 'success', duration = 5000) {
     setTimeout(() => {
         alertDiv.style.display = 'none';
     }, duration);
-}
+};
 
 // ===== CARGA EN BOTÓN =====
-export function showLoading(formId, show = true) {
+window.showLoading = function(formId, show = true) {
     const form = document.getElementById(formId);
     if (!form) return;
 
@@ -28,21 +28,21 @@ export function showLoading(formId, show = true) {
         if (text) text.style.display = 'inline';
         if (loading) loading.style.display = 'none';
     }
-}
+};
 
 // ===== FORMATEADORES =====
-export function formatDate(dateStr) {
+window.formatDate = function(dateStr) {
     if (!dateStr) return '';
     return new Date(dateStr).toLocaleDateString('es-ES');
-}
+};
 
-export function formatTime(timeStr) {
+window.formatTime = function(timeStr) {
     if (!timeStr) return '';
     const [hour, minute] = timeStr.split(':');
     return `${hour}:${minute}`;
-}
+};
 
-export function getStatusText(status) {
+window.getStatusText = function(status) {
     const map = {
         PENDING: 'Pendiente',
         CONFIRMED: 'Confirmada',
@@ -50,9 +50,9 @@ export function getStatusText(status) {
         COMPLETED: 'Completada'
     };
     return map[status] || 'Desconocido';
-}
+};
 
-export function getCategoryName(cat) {
+window.getCategoryName = function(cat) {
     const map = {
         ORTHODONTICS: 'Ortodoncia',
         SURGERY: 'Cirugía',
@@ -60,10 +60,10 @@ export function getCategoryName(cat) {
         RESTORATION: 'Restauración'
     };
     return map[cat] || 'Otro';
-}
+};
 
 // ===== UTILIDADES GENERALES =====
-export function calculateAge(birthDateStr) {
+window.calculateAge = function(birthDateStr) {
     const birthDate = new Date(birthDateStr);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -72,32 +72,32 @@ export function calculateAge(birthDateStr) {
         age--;
     }
     return age;
-}
+};
 
-export function escapeHtml(str) {
+window.escapeHtml = function(str) {
     if (!str) return '';
     return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+};
 
-export function validateEmail(email) {
+window.validateEmail = function(email) {
     const regex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
-}
+};
 
-export function validateTime(time) {
+window.validateTime = function(time) {
     const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
     return regex.test(time);
-}
+};
 
-export function validateDate(date) {
+window.validateDate = function(date) {
     return !isNaN(new Date(date).getTime());
-}
+};
 
 // ===== DEBOUNCE =====
-export function debounce(func, delay = 300) {
+window.debounce = function(func, delay = 300) {
     let timeout;
     return (...args) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), delay);
     };
-}
+};
