@@ -1,5 +1,5 @@
-// ===== FUNCIONES DE UTILIDAD =====
-// Ya no se importa nada. Se espera que <script src="lib/utilidades.js"></script> esté cargado en el HTML
+/* eslint-env browser */
+/* eslint parserOptions: { "sourceType": "module" } */
 
 // ===== VARIABLES GLOBALES =====
 let appointments = [];

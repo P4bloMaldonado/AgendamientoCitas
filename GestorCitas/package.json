@@ -8,7 +8,7 @@
     "dev": "nodemon server.js",
     "test": "mocha test/**/*.test.js --timeout 10000",
     "test:watch": "mocha test/**/*.test.js --watch",
-    "lint": "npx eslint . --ext .js --ignore-path .gitignore",
+    "lint": "npx eslint . --ext .js --ignore-path .eslintignore",
     "lint:fix": "npx eslint . --ext .js --ignore-path .gitignore --fix",
     "build": "npm run build:clean && npm run build:copy",
     "build:clean": "rm -rf dist && mkdir dist",
