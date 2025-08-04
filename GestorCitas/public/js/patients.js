@@ -1,469 +1,271 @@
+// ===== FUNCIONES DE UTILIDAD =====
+// Ya no se importa nada. Se espera que <script src="lib/utilidades.js"></script> esté cargado en el HTML
+
 // ===== VARIABLES GLOBALES =====
+let appointments = [];
 let patients = [];
+let treatments = [];
 
 // ===== ELEMENTOS DEL DOM =====
-const patientForm = document.getElementById('patient-form');
+const appointmentForm = document.getElementById('appointment-form');
 const editForm = document.getElementById('edit-form');
 const editModal = document.getElementById('edit-modal');
-const patientsContainer = document.getElementById('patients-container');
+const appointmentsContainer = document.getElementById('appointments-container');
 const alertSuccess = document.getElementById('alert-success');
 const alertError = document.getElementById('alert-error');
-const searchInput = document.getElementById('search-patients');
+const filterDate = document.getElementById('filter-date');
 const refreshBtn = document.getElementById('refresh-btn');
 
-// ===== CONFIGURACIÓN =====
+// ===== CONFIGURACIÓN DE LA APLICACIÓN =====
 const CONFIG = {
     API_BASE_URL: '/api',
-    ALERT_TIMEOUT: 5000
+    ALERT_TIMEOUT: 5000,
+    DATE_FORMAT: 'es-ES',
+    TIME_FORMAT: { hour: '2-digit', minute: '2-digit', hour12: true }
 };
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('👥 Iniciando Gestión de Pacientes...');
+    console.log('🦷 Iniciando Sistema de Gestión de Citas Odontológicas...');
     initApp();
 });
 
-async function initApp() {
-    try {
-        await loadPatients();
-        setupEventListeners();
-        updateStats();
-        console.log('✅ Gestión de pacientes inicializada');
-    } catch (error) {
-        console.error('❌ Error al inicializar:', error);
-        showAlert('Error al inicializar la aplicación', 'error');
-    }
+function initApp() {
+    fetchPatients();
+    fetchTreatments();
+    fetchAppointments();
+
+    appointmentForm?.addEventListener('submit', handleAppointmentSubmit);
+    editForm?.addEventListener('submit', handleEditSubmit);
+    refreshBtn?.addEventListener('click', refreshData);
+    filterDate?.addEventListener('change', filterAppointments);
 }
 
-function setupEventListeners() {
-    // Formularios
-    if (patientForm) patientForm.addEventListener('submit', handleCreatePatient);
-    if (editForm) editForm.addEventListener('submit', handleUpdatePatient);
-    
-    // Búsqueda en tiempo real
-    if (searchInput) searchInput.addEventListener('input', debounce(handleSearch, 300));
-    
-    // Botones
-    if (refreshBtn) refreshBtn.addEventListener('click', refreshData);
-    
-    // Modal
-    const closeBtn = document.querySelector('.close');
-    const cancelBtn = document.getElementById('cancel-edit');
-    
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-    
-    // Cerrar modal al hacer clic fuera
-    window.addEventListener('click', (e) => {
-        if (e.target === editModal) {
-            closeModal();
-        }
-    });
-}
-
-// ===== FUNCIONES DE API =====
-async function apiRequest(endpoint, options = {}) {
-    const url = `${CONFIG.API_BASE_URL}${endpoint}`;
-    
-    try {
-        const response = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
+function fetchPatients() {
+    fetch(`${CONFIG.API_BASE_URL}/patients`)
+        .then(res => res.json())
+        .then(data => {
+            patients = data;
+            populatePatientSelects();
+        })
+        .catch(error => {
+            console.error('Error al obtener pacientes:', error);
+            showAlert('Error al cargar pacientes.', 'error');
         });
-
-        const data = await response.json();
-        
-        if (!data.success) {
-            throw new Error(data.message || 'Error en la petición');
-        }
-        
-        return data;
-    } catch (error) {
-        console.error('❌ Error en petición API:', error);
-        throw error;
-    }
 }
 
-async function loadPatients() {
-    try {
-        const data = await apiRequest('/patients');
-        patients = data.data || [];
-        renderPatients();
-        console.log(`👥 ${patients.length} pacientes cargados`);
-    } catch (error) {
-        console.error('❌ Error cargando pacientes:', error);
-        showAlert('Error al cargar los pacientes: ' + error.message, 'error');
-    }
+function fetchTreatments() {
+    fetch(`${CONFIG.API_BASE_URL}/treatments`)
+        .then(res => res.json())
+        .then(data => {
+            treatments = data;
+            populateTreatmentSelects();
+        })
+        .catch(error => {
+            console.error('Error al obtener tratamientos:', error);
+            showAlert('Error al cargar tratamientos.', 'error');
+        });
 }
 
-// ===== RENDERIZADO =====
-function renderPatients(patientsToRender = patients) {
-    if (!patientsContainer) return;
+function fetchAppointments() {
+    fetch(`${CONFIG.API_BASE_URL}/appointments`)
+        .then(res => res.json())
+        .then(data => {
+            appointments = data;
+            renderAppointments();
+        })
+        .catch(error => {
+            console.error('Error al obtener citas:', error);
+            showAlert('Error al cargar citas.', 'error');
+        });
+}
 
-    if (!patientsToRender || patientsToRender.length === 0) {
-        patientsContainer.innerHTML = `
+function renderAppointments() {
+    appointmentsContainer.innerHTML = '';
+
+    const filtered = filterDate.value
+        ? appointments.filter(app => app.date === filterDate.value)
+        : appointments;
+
+    if (filtered.length === 0) {
+        appointmentsContainer.innerHTML = `
             <div class="empty-state">
-                <i class="fas fa-user-times"></i>
-                <p>No hay pacientes registrados</p>
-                <small>Los pacientes aparecerán aquí una vez que los agregues</small>
+                <i class="fas fa-calendar-times" aria-hidden="true"></i>
+                <p>No hay citas programadas</p>
+                <small>Las citas aparecerán aquí una vez que las crees</small>
+            </div>`;
+        return;
+    }
+
+    filtered.forEach(app => {
+        const patient = patients.find(p => p.id === app.patientId);
+        const treatment = treatments.find(t => t.id === app.treatmentId);
+
+        const card = document.createElement('div');
+        card.className = 'appointment-card';
+        card.innerHTML = `
+            <div>
+                <h3>${escapeHtml(patient?.name || 'Paciente Desconocido')}</h3>
+                <p><strong>Tratamiento:</strong> ${escapeHtml(treatment?.name || 'N/A')}</p>
+                <p><strong>Fecha:</strong> ${formatDate(app.date)}</p>
+                <p><strong>Hora:</strong> ${formatTime(app.time)}</p>
+                <p><strong>Estado:</strong> ${getStatusText(app.status)}</p>
+            </div>
+            <div>
+                <button class="btn btn-small" onclick="editAppointment(${app.id})">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
             </div>
         `;
-        return;
-    }
-
-    patientsContainer.innerHTML = patientsToRender.map(patient => {
-        const age = patient.birth_date ? calculateAge(patient.birth_date) : 'N/A';
-        const hasAllergies = patient.allergies && patient.allergies !== 'Ninguna';
-        
-        return `
-            <div class="patient-item">
-                <div class="patient-header">
-                    <div class="patient-name">
-                        <i class="fas fa-user"></i>
-                        ${escapeHtml(patient.name)}
-                        ${age !== 'N/A' ? `<span class="patient-age">(${age} años)</span>` : ''}
-                    </div>
-                    ${hasAllergies ? `
-                        <span class="allergy-badge">
-                            <i class="fas fa-exclamation-triangle"></i> Alergias
-                        </span>
-                    ` : ''}
-                </div>
-                
-                <div class="patient-details">
-                    ${patient.email ? `
-                        <div class="patient-detail">
-                            <i class="fas fa-envelope"></i>
-                            <span>${escapeHtml(patient.email)}</span>
-                        </div>
-                    ` : ''}
-                    
-                    ${patient.phone ? `
-                        <div class="patient-detail">
-                            <i class="fas fa-phone"></i>
-                            <span>${escapeHtml(patient.phone)}</span>
-                        </div>
-                    ` : ''}
-                    
-                    ${patient.emergency_contact ? `
-                        <div class="patient-detail">
-                            <i class="fas fa-user-shield"></i>
-                            <span>Emergencia: ${escapeHtml(patient.emergency_contact)}</span>
-                        </div>
-                    ` : ''}
-                </div>
-                
-                ${hasAllergies ? `
-                    <div class="allergy-warning">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span><strong>Alergias:</strong> ${escapeHtml(patient.allergies)}</span>
-                    </div>
-                ` : ''}
-                
-                ${patient.medical_history ? `
-                    <div class="patient-detail" style="margin-top: 10px;">
-                        <i class="fas fa-notes-medical"></i>
-                        <span><strong>Historia médica:</strong> ${escapeHtml(patient.medical_history)}</span>
-                    </div>
-                ` : ''}
-                
-                <div class="patient-actions">
-                    <button onclick="editPatient(${patient.id})" class="btn btn-small">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button onclick="deletePatient(${patient.id})" class="btn btn-danger btn-small">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// ===== MANEJADORES DE EVENTOS =====
-async function handleCreatePatient(e) {
-    e.preventDefault();
-    
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const btnText = document.getElementById('btn-text');
-    const btnLoading = document.getElementById('btn-loading');
-    
-    try {
-        // Mostrar estado de carga
-        if (btnText) btnText.style.display = 'none';
-        if (btnLoading) btnLoading.style.display = 'inline-block';
-        if (submitBtn) submitBtn.disabled = true;
-        
-        const patientData = {
-            name: document.getElementById('patient-name')?.value?.trim(),
-            email: document.getElementById('patient-email')?.value?.trim() || null,
-            phone: document.getElementById('patient-phone')?.value?.trim() || null,
-            address: document.getElementById('patient-address')?.value?.trim() || null,
-            birth_date: document.getElementById('patient-birth-date')?.value || null,
-            emergency_contact: document.getElementById('emergency-contact')?.value?.trim() || null,
-            emergency_phone: document.getElementById('emergency-phone')?.value?.trim() || null,
-            medical_history: document.getElementById('medical-history')?.value?.trim() || null,
-            allergies: document.getElementById('allergies')?.value?.trim() || null
-        };
-
-        // Validación básica
-        if (!patientData.name) {
-            throw new Error('El nombre del paciente es obligatorio');
-        }
-
-        await apiRequest('/patients', {
-            method: 'POST',
-            body: JSON.stringify(patientData)
-        });
-
-        showAlert('✅ Paciente agregado exitosamente', 'success');
-        patientForm.reset();
-        await refreshData();
-        
-    } catch (error) {
-        console.error('❌ Error creando paciente:', error);
-        showAlert('Error al agregar el paciente: ' + error.message, 'error');
-    } finally {
-        // Ocultar estado de carga
-        if (btnText) btnText.style.display = 'inline';
-        if (btnLoading) btnLoading.style.display = 'none';
-        if (submitBtn) submitBtn.disabled = false;
-    }
-}
-
-async function handleUpdatePatient(e) {
-    e.preventDefault();
-    
-    try {
-        const patientId = document.getElementById('edit-patient-id')?.value;
-        
-        if (!patientId) {
-            throw new Error('ID de paciente no válido');
-        }
-
-        const updateData = {
-            name: document.getElementById('edit-patient-name')?.value?.trim(),
-            email: document.getElementById('edit-patient-email')?.value?.trim() || null,
-            phone: document.getElementById('edit-patient-phone')?.value?.trim() || null,
-            address: document.getElementById('edit-patient-address')?.value?.trim() || null,
-            birth_date: document.getElementById('edit-patient-birth-date')?.value || null,
-            emergency_contact: document.getElementById('edit-emergency-contact')?.value?.trim() || null,
-            emergency_phone: document.getElementById('edit-emergency-phone')?.value?.trim() || null,
-            medical_history: document.getElementById('edit-medical-history')?.value?.trim() || null,
-            allergies: document.getElementById('edit-allergies')?.value?.trim() || null
-        };
-
-        if (!updateData.name) {
-            throw new Error('El nombre del paciente es obligatorio');
-        }
-
-        await apiRequest(`/patients/${patientId}`, {
-            method: 'PUT',
-            body: JSON.stringify(updateData)
-        });
-
-        showAlert('✅ Paciente actualizado exitosamente', 'success');
-        closeModal();
-        await refreshData();
-        
-    } catch (error) {
-        console.error('❌ Error actualizando paciente:', error);
-        showAlert('Error al actualizar el paciente: ' + error.message, 'error');
-    }
-}
-
-async function editPatient(id) {
-    try {
-        const data = await apiRequest(`/patients/${id}`);
-        const patient = data.data;
-        
-        // Poblar formulario de edición
-        const formFields = {
-            'edit-patient-id': patient.id,
-            'edit-patient-name': patient.name || '',
-            'edit-patient-email': patient.email || '',
-            'edit-patient-phone': patient.phone || '',
-            'edit-patient-address': patient.address || '',
-            'edit-patient-birth-date': patient.birth_date || '',
-            'edit-emergency-contact': patient.emergency_contact || '',
-            'edit-emergency-phone': patient.emergency_phone || '',
-            'edit-medical-history': patient.medical_history || '',
-            'edit-allergies': patient.allergies || ''
-        };
-
-        Object.entries(formFields).forEach(([id, value]) => {
-            const element = document.getElementById(id);
-            if (element) element.value = value;
-        });
-        
-        // Mostrar modal
-        if (editModal) editModal.style.display = 'block';
-        
-    } catch (error) {
-        console.error('❌ Error cargando paciente para editar:', error);
-        showAlert('Error al cargar los datos del paciente: ' + error.message, 'error');
-    }
-}
-
-async function deletePatient(id) {
-    const patient = patients.find(p => p.id === id);
-    const patientName = patient ? patient.name : 'este paciente';
-    
-    if (!confirm(`⚠️ ¿Está seguro de que desea eliminar a ${patientName}?\n\nEsta acción no se puede deshacer.`)) {
-        return;
-    }
-    
-    try {
-        await apiRequest(`/patients/${id}`, {
-            method: 'DELETE'
-        });
-        
-        showAlert('✅ Paciente eliminado exitosamente', 'success');
-        await refreshData();
-        
-    } catch (error) {
-        console.error('❌ Error eliminando paciente:', error);
-        showAlert('Error al eliminar el paciente: ' + error.message, 'error');
-    }
-}
-
-async function handleSearch() {
-    const searchTerm = searchInput?.value?.trim();
-    
-    if (!searchTerm) {
-        renderPatients();
-        return;
-    }
-    
-    try {
-        const data = await apiRequest(`/patients/search?q=${encodeURIComponent(searchTerm)}`);
-        renderPatients(data.data);
-    } catch (error) {
-        console.error('❌ Error en búsqueda:', error);
-        showAlert('Error en la búsqueda: ' + error.message, 'error');
-    }
-}
-
-async function refreshData() {
-    try {
-        if (refreshBtn) {
-            refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Actualizando...';
-            refreshBtn.disabled = true;
-        }
-        
-        await loadPatients();
-        updateStats();
-        showAlert('✅ Datos actualizados correctamente', 'success');
-        
-    } catch (error) {
-        console.error('❌ Error actualizando datos:', error);
-        showAlert('Error al actualizar los datos: ' + error.message, 'error');
-    } finally {
-        if (refreshBtn) {
-            refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Actualizar';
-            refreshBtn.disabled = false;
-        }
-    }
-}
-
-function closeModal() {
-    if (editModal) editModal.style.display = 'none';
-    if (editForm) editForm.reset();
-}
-
-// ===== FUNCIONES DE UTILIDAD =====
-function updateStats() {
-    const totalPatients = patients.length;
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    
-    // Pacientes nuevos este mes
-    const newThisMonth = patients.filter(patient => {
-        const createdDate = new Date(patient.created_at);
-        return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
-    }).length;
-    
-    // Pacientes con alergias
-    const withAllergies = patients.filter(patient => 
-        patient.allergies && patient.allergies !== 'Ninguna' && patient.allergies.trim() !== ''
-    ).length;
-    
-    // Cumpleaños este mes
-    const birthdaysThisMonth = patients.filter(patient => {
-        if (!patient.birth_date) return false;
-        const birthDate = new Date(patient.birth_date);
-        return birthDate.getMonth() === currentMonth;
-    }).length;
-    
-    // Actualizar estadísticas
-    const stats = {
-        'total-patients': totalPatients,
-        'new-patients-month': newThisMonth,
-        'patients-with-allergies': withAllergies,
-        'birthdays-this-month': birthdaysThisMonth
-    };
-
-    Object.entries(stats).forEach(([id, value]) => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = value;
+        appointmentsContainer.appendChild(card);
     });
 }
 
-function calculateAge(birthDate) {
-    if (!birthDate) return '';
-    
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-        age--;
-    }
-    
-    return age;
+function filterAppointments() {
+    renderAppointments();
 }
 
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function refreshData() {
+    fetchPatients();
+    fetchTreatments();
+    fetchAppointments();
 }
 
-function showAlert(message, type = 'success') {
-    const alertElement = type === 'success' ? alertSuccess : alertError;
-    
-    if (!alertElement) {
-        console.log(`${type.toUpperCase()}: ${message}`);
-        return;
-    }
-    
-    alertElement.textContent = message;
-    alertElement.style.display = 'block';
-    
-    setTimeout(() => {
-        alertElement.style.display = 'none';
-    }, CONFIG.ALERT_TIMEOUT);
+function populatePatientSelects() {
+    const selects = [document.getElementById('patient-select'), document.getElementById('edit-patient-select')];
+    selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '<option value="">Seleccione un paciente</option>';
+        patients.forEach(patient => {
+            const option = document.createElement('option');
+            option.value = patient.id;
+            option.textContent = patient.name;
+            select.appendChild(option);
+        });
+    });
 }
 
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+function populateTreatmentSelects() {
+    const selects = [document.getElementById('treatment-select'), document.getElementById('edit-treatment-select')];
+    selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '<option value="">Seleccione un tratamiento</option>';
+        treatments.forEach(treatment => {
+            const option = document.createElement('option');
+            option.value = treatment.id;
+            option.textContent = treatment.name;
+            select.appendChild(option);
+        });
+    });
+}
+
+window.editAppointment = function (id) {
+    const app = appointments.find(a => a.id === id);
+    if (!app) return;
+
+    document.getElementById('edit-appointment-id').value = app.id;
+    document.getElementById('edit-patient-select').value = app.patientId;
+    document.getElementById('edit-treatment-select').value = app.treatmentId;
+    document.getElementById('edit-appointment-date').value = app.date;
+    document.getElementById('edit-appointment-time').value = app.time;
+    document.getElementById('edit-status').value = app.status;
+    document.getElementById('edit-appointment-notes').value = app.notes || '';
+    document.getElementById('edit-dentist-notes').value = app.dentistNotes || '';
+
+    editModal.style.display = 'block';
+};
+
+document.querySelector('#edit-modal .close').addEventListener('click', () => {
+    editModal.style.display = 'none';
+});
+document.getElementById('cancel-edit').addEventListener('click', () => {
+    editModal.style.display = 'none';
+});
+
+function handleAppointmentSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+
+    const newApp = {
+        patientId: form['patient-select'].value,
+        treatmentId: form['treatment-select'].value,
+        date: form['appointment-date'].value,
+        time: form['appointment-time'].value,
+        notes: form['appointment-notes'].value
     };
+
+    showLoading('appointment-form', true);
+
+    fetch(`${CONFIG.API_BASE_URL}/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newApp)
+    })
+        .then(res => res.json())
+        .then(() => {
+            showAlert('Cita creada con éxito');
+            form.reset();
+            refreshData();
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('Error al crear la cita', 'error');
+        })
+        .finally(() => {
+            showLoading('appointment-form', false);
+        });
 }
 
-// ===== FUNCIONES EXPUESTAS GLOBALMENTE =====
-window.editPatient = editPatient;
-window.deletePatient = deletePatient;
+function handleEditSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
 
-console.log('👥 Sistema de Gestión de Pacientes cargado');
+    const id = form['edit-appointment-id'].value;
+    const updatedApp = {
+        patientId: form['edit-patient-select'].value,
+        treatmentId: form['edit-treatment-select'].value,
+        date: form['edit-appointment-date'].value,
+        time: form['edit-appointment-time'].value,
+        status: form['edit-status'].value,
+        notes: form['edit-appointment-notes'].value,
+        dentistNotes: form['edit-dentist-notes'].value
+    };
+
+    fetch(`${CONFIG.API_BASE_URL}/appointments/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedApp)
+    })
+        .then(res => res.json())
+        .then(() => {
+            showAlert('Cita actualizada con éxito');
+            editModal.style.display = 'none';
+            refreshData();
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('Error al actualizar la cita', 'error');
+        });
+}
+
+function checkConnectivity() {
+    if (navigator.onLine) {
+        console.log('🌐 Conexión a internet: ✅ Online');
+    } else {
+        console.warn('🌐 Conexión a internet: ❌ Offline');
+        showAlert('Sin conexión a internet. Algunas funcionalidades pueden no estar disponibles.', 'error');
+    }
+}
+
+window.addEventListener('online', () => {
+    console.log('🌐 Conexión restaurada');
+    showAlert('Conexión a internet restaurada', 'success');
+    refreshData();
+});
+
+window.addEventListener('offline', () => {
+    console.warn('🌐 Conexión perdida');
+    showAlert('Se perdió la conexión a internet', 'error');
+});
+
+checkConnectivity();
