@@ -1,0 +1,9 @@
+{
+  "name": "libreria-utilidades",
+  "version": "1.0.0",
+  "description": "Librería de funciones auxiliares para gestión de citas odontológicas",
+  "main": "index.js",
+  "keywords": ["utilidades", "formato", "fechas"],
+  "author": "Emilio Quinga, Pablo Maldonado, Alexander Motoche",
+  "license": "MIT"
+}
