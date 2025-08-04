@@ -1,6 +1,11 @@
-// ===== FUNCIONES DE UTILIDAD =====
-// Ya no se importa nada. Se espera que <script src="lib/utilidades.js"></script> esté cargado en el HTML
-
+import {
+    showAlert,
+    showLoading,
+    formatDate,
+    formatTime,
+    getStatusText,
+    escapeHtml
+} from './lib/utilidades.js';
 // ===== VARIABLES GLOBALES =====
 let appointments = [];
 let patients = [];
